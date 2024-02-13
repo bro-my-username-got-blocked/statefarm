@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<link rel="manifest" href="./assets/manifest.json">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Cl0@k3r</title>
+  <script>
+  window.onload = function() {
+    loadBookmarks();
+  };
+    function toggleBookmarkForm() {
+      var bookmarkForm = document.getElementById("bookmarkForm");
+      if (bookmarkForm.style.display === "none") {
+        bookmarkForm.style.display = "block";
+      } else {
+        bookmarkForm.style.display = "none";
+      }
+    }
+    function createBookmark() {
+      var title = document.getElementById("bookmarkTitle").value;
+      var url = document.getElementById("bookmarkURL").value;
+      if (title && url) {
+        var bookmark = {
+          title: title,
+          url: url
+        };
+        var bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+        bookmarks.push(bookmark);
+        localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+        addBookmarkToUI(bookmark);
+      }
+      document.getElementById("bookmarkForm").reset();
+      document.getElementById("bookmarkForm").style.display = "none";
+    }
+
+    function addBookmarkToUI(bookmark) {
+      var bookmarkButton = document.createElement("button");
+      bookmarkButton.textContent = bookmark.title;
+      var removeButton = document.createElement("button");
+      removeButton.textContent = "X";
+      removeButton.onclick = function() {
+        removeBookmark(bookmarkButton, bookmark);
+      };
+      bookmarkButton.onclick = function() {
+        openURL(bookmark.url);
+      };
+      document.getElementById("bookmarkList").appendChild(bookmarkButton);
+      document.getElementById("bookmarkList").appendChild(removeButton);
+    }
+    function removeBookmark(button, bookmark) {
+      var bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+      var index = bookmarks.findIndex(b => b.title === bookmark.title && b.url === bookmark.url);
+      if (index !== -1) {
+        bookmarks.splice(index, 1);
+        localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+      }
+      button.parentNode.removeChild(button.nextSibling); // Remove Remove Bookmark button
+      button.parentNode.removeChild(button); // Remove Bookmark button
+    }
+    function loadBookmarks() {
+      var bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+      bookmarks.forEach(function(bookmark) {
+        addBookmarkToUI(bookmark);
+      });
+    }
+  </script>
+</head>
+<body>
+  <main>
+    <h1>Cl0@k3r</h1>
+    <div>
+      <form>
+        <input id="searchInput" type="text" placeholder="Type here to search...">
+      </form>
+      <div id="bookmarkList"></div>
+      <button onclick="toggleBookmarkForm()">Create Bookmark</button>
+      <div id="bookmarkForm" style="display: none;">
+        <form>
+          <input type="text" id="bookmarkTitle" placeholder="Title">
+          <input type="text" id="bookmarkURL" placeholder="URL">
+          <button type="button" onclick="createBookmark()">Create Bookmark</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
+<div id="search"></div>
+<div id="settings"></div>
+<div id="home"></div>
+<div id="footer"></div>
+<div id="password"></div>
+<script src="./test.js"></script>
+<script src="./js/uv/uv.bundle.js"></script>
+<script src="./js/uv/uv.config.js"></script>
+<script src="./js/register-uv.js"></script>
+<script src="./js/index.js"></script>
