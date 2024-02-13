@@ -59,20 +59,6 @@ function getSearchEngineURL() {
 
 // Start of about:blank functions
 
-function getAboutBlank() {
-    if (localStorage.getItem('aboutBlank') === 'on') {
-        var introText = document.getElementById("introText");
-        introText.innerHTML = "<b>Elixir:</b><br>Search the web without censorship or tracking.</a>"
-
-        var searchPlaceholder = document.querySelector("input");
-        searchPlaceholder.placeholder = "Search here without tracking";
-
-        return 'on';
-    } else {
-        return 'off';
-    }
-}
-
 // opens page in about:blank
 function openAboutBlank(url) {
     if (url === undefined) {
@@ -125,30 +111,6 @@ function openPage(page) {
         document.getElementById("password").style.display = "flex";
     }
 }
-
-// sets the custom shortcut
-function setCustomShortcut() {
-    const $shortcutURL = document.getElementById('shortcutURL');
-    const $shortcutLogo = document.getElementById('shortcutLogo');
-
-    if ($shortcutURL.value === '' && $shortcutLogo.value === '') {
-        alert('Cleared custom shortcut');
-        localStorage.removeItem('shortcutURL');
-        localStorage.removeItem('shortcutLogo');
-        setupCustomShortcut();
-    } else if ($shortcutURL.value === '' || $shortcutLogo.value === '') {
-        alert('Please fill out both fields');
-    } else {
-        if ($shortcutURL.value.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi)) {
-            localStorage.setItem('shortcutURL', $shortcutURL.value);
-            localStorage.setItem('shortcutLogo', $shortcutLogo.value.charAt(0));
-            alert('Shortcut set!');
-            setupCustomShortcut();
-        } else {
-            alert('Please enter a valid URL');
-        }
-    }
-}
 // changes the favicon
 function changeFavicon(src) {
     var link = document.createElement('link'),
@@ -194,28 +156,6 @@ function fetchAnnouncement() {
         }
     });
 }
-
-function closeAnnouncement() {
-    document.getElementById("announcement").style.display = "none";
-    // dont show for 24 hours
-    localStorage.setItem('announcement', Date.now());
-}
-
-function showAnnouncement() {
-    // check if announcement has been shown in the last 24 hours
-    if (localStorage.getItem('announcement') != null) {
-        const lastShown = localStorage.getItem('announcement');
-        const now = Date.now();
-        const diff = now - lastShown;
-        const hours = Math.floor(diff / 1000 / 60 / 60);
-        if (hours > 2) {
-            fetchAnnouncement();
-        }
-    } else {
-        fetchAnnouncement();
-    }
-}
-
 showAnnouncement();
 
 // end of announcement code
