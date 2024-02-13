@@ -35,58 +35,6 @@ function openURL(url) {
       }
     });
 };
-
-// start of password protection
-if (getPassword() == null) {
-    openPage('home');
-} else {
-    openPage('password');
-    document.getElementById('sidebar').style.display = 'none';
-}
-
-function getPassword() {
-    return localStorage.getItem('password') || null;
-}
-
-function setPassword() {
-    const $password = document.getElementById('password-set');
-    const password = $password.value;
-    if (password == null || password == '') {
-        alert('Removed password');
-        localStorage.removeItem('password');
-        return;
-    }
-    if (confirm("Are you sure you want to password protect this page? If you do, you will not be able to access this page without the password. If you do not want to password protect this page, click cancel.") == true) {
-        localStorage.setItem('password', password);
-    }
-}
-
-function checkPassword() {
-    const $password = document.getElementById('password-prompt');
-    const password = $password.value;
-    if (password == getPassword()) {
-        openPage('home');
-        document.getElementById('sidebar').style.display = 'flex';
-    } else {
-        window.location.href = getSearchEngineURL();
-    }
-}
-
-function togglePassword() {
-    var x = document.getElementById("passwordToggle");
-    if (x.type === "password") {
-        x.type = "text";
-    } else {
-        x.type = "password";
-    }
-}
-
-// end of password protection
-
-selectedIcon('icon-home');
-
-setupCloak();
-
 if (getAboutBlank() === 'on') {
     openPage('search');
     selectedIcon('icon-search');
@@ -103,72 +51,10 @@ $analyticsSelect.value = getAnalytics();
 const $aboutBlankSelect = document.getElementById('aboutBlankSelect');
 $aboutBlankSelect.value = getAboutBlank();
 
-// Check their preferred search engine
-function getSearchEngine () {
-    return localStorage.getItem('searchEngine') || 'Google';
-}
-
-// start of anaylitics functions
-
-function getAnalytics() {
-    return localStorage.getItem('analytics') || 'on';
-}
-
-function setAnalytics() {
-    const $analyticsSelect = document.getElementById('analyticsSelect');
-    const analyticsPref = $analyticsSelect.value;
-    if (analyticsPref === 'on') {
-        localStorage.setItem('analytics', 'on');
-    } else if (analyticsPref === 'off') {
-        localStorage.setItem('analytics', 'off');
-    }
-    location.reload();
-}
-
-// analytics (change it if you want to enable it)
-if(localStorage.getItem('analytics') != 'off') {
-    var scriptTagGTAG = document.createElement('script');
-    scriptTagGTAG.setAttribute('async', '');
-    scriptTagGTAG.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-CX3B4NHEG0');
-    document.head.appendChild(scriptTagGTAG);
-    // gtag
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments)};
-    gtag('js', new Date());
-
-    gtag('config', 'G-CX3B4NHEG0');
-
-    // arc
-    var scriptTagARC = document.createElement('script');
-    scriptTagARC.setAttribute('async', '');
-    scriptTagARC.setAttribute('src', 'https://arc.io/widget.min.js#85sFzH5m');
-    document.head.appendChild(scriptTagARC);
-}
-
-// end of anaylitics functions
-
-// Set their preferred search engine
-function setSearchEngine () {
-    const $searchSelect = document.getElementById('searchSelect');
-    const searchEngine = $searchSelect.value;
-    if (searchEngine === 'Google') {
-        localStorage.setItem('searchEngineURL', 'https://google.com/search?q=');
-        localStorage.setItem('searchEngine', 'Google');
-    } else if (searchEngine === 'DuckDuckGo') {
-        localStorage.setItem('searchEngineURL', 'https://duckduckgo.com/?q=');
-        localStorage.setItem('searchEngine', 'DuckDuckGo');
-    } else if (searchEngine === 'Bing') {
-        localStorage.setItem('searchEngineURL', 'https://bing.com/search?q=');
-        localStorage.setItem('searchEngine', 'Bing');
-    } else if (searchEngine === 'Brave Search') {
-        localStorage.setItem('searchEngineURL', 'https://search.brave.com/search?q=');
-        localStorage.setItem('searchEngine', 'Brave Search');
-    }
-}
 
 // get search engine url
 function getSearchEngineURL() {
-    return localStorage.getItem('searchEngineURL') || 'https://google.com/search?q=';
+    return 'https://google.com/search?q=';
 }
 
 // Start of about:blank functions
@@ -184,18 +70,6 @@ function getAboutBlank() {
         return 'on';
     } else {
         return 'off';
-    }
-}
-
-// Opens page in a new about:blank tab
-function setAboutBlank() {
-    const $aboutBlankSelect = document.getElementById('aboutBlankSelect');
-    const aboutBlankSelect = $aboutBlankSelect.value;
-    if (aboutBlankSelect === 'on') {
-        localStorage.setItem('aboutBlank', 'on');
-        openAboutBlank();
-    } else if (aboutBlankSelect === 'off') {
-        localStorage.setItem('aboutBlank', 'off');
     }
 }
 
@@ -275,55 +149,6 @@ function setCustomShortcut() {
         }
     }
 }
-
-// changes the text on the custom shortcut and changes the onclick function to open the shortcut url
-function setupCustomShortcut() {
-    if (localStorage.getItem('shortcutURL') != null) {
-        document.getElementById('customShortcutIcon').innerHTML = localStorage.getItem('shortcutLogo');
-        document.getElementById('customShortcutDiv').onclick = function() {openURL(localStorage.getItem('shortcutURL'))};
-    }
-}
-
-// sets the cloak
-function setCloak() {
-    const $cloakTitle = document.getElementById('cloakTitle');
-    const $cloakFavicon = document.getElementById('cloakFavicon');
-
-    if ($cloakTitle.value === '' && $cloakFavicon.value === '') {
-        alert('Cleared cloak');
-        localStorage.removeItem('cloakTitle');
-        localStorage.removeItem('cloakFavicon');
-    } else if ($cloakTitle.value === '' && $cloakFavicon.value != '') {
-        if ($cloakFavicon.value.match(/(https?:\/\/).*/gi)) {
-            localStorage.setItem('cloakFavicon', $cloakFavicon.value);
-        }
-    } else if ($cloakTitle.value != '' && $cloakFavicon.value === '') {
-        localStorage.setItem('cloakTitle', $cloakTitle.value);
-    } else {
-        localStorage.setItem('cloakTitle', $cloakTitle.value);
-        if ($cloakFavicon.value.match(/(https?:\/\/).*/gi)) {
-            localStorage.setItem('cloakFavicon', $cloakFavicon.value);
-        } else {
-            alert('Please enter a valid URL like: https://example.com/favicon.ico');
-        }
-    }
-    setupCloak();
-}
-
-// changes the text on the custom shortcut and changes the onclick function to open the shortcut url
-function setupCloak() {
-    if (localStorage.getItem('cloakTitle') != null) {
-        document.title = localStorage.getItem('cloakTitle');
-    }
-    if (localStorage.getItem('cloakFavicon') != null) {
-        changeFavicon(localStorage.getItem('cloakFavicon'));
-    }
-    if (localStorage.getItem('cloakTitle') == null && localStorage.getItem('cloakFavicon') == null) {
-        document.title = 'Elixir - Blazingly Fast Math Help!';
-        changeFavicon('favicon.ico');
-    }
-}
-
 // changes the favicon
 function changeFavicon(src) {
     var link = document.createElement('link'),
